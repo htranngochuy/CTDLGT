@@ -1,0 +1,93 @@
+#include <iostream>
+
+#define null -1
+struct Cay {
+    int a[100];
+    int n;
+};
+
+void rong(Cay &t) {
+    for (int i = 0; i < 100; i++) {
+        t.a[i] = -1;
+    }
+}
+
+bool ktra_rong(Cay t) {
+    if (t.a[0] == -1)
+        return true;
+    else return false;
+}
+
+void them_goc(Cay& t, int x) {
+    if (ktra_rong(t)) {
+        t.a[0] = x;
+        t.n = 1;
+    }
+    else std::cout << "Khong them duoc\n";
+}
+
+// them vao node co chi so i 
+void them_trai(Cay& t, int i, int x) {
+    int l = 2 * i + 1;
+    if (t.a[i] == -1) {
+        std::cout << "Khong them duoc\n";
+    }
+    else {
+        t.a[l] = x;
+    }
+}
+
+void them_phai(Cay& t, int i, int x) {
+    int r = 2 * i + 2;
+    if (t.a[i] == -1) {
+        std::cout << "Khong them duoc\n";
+    }
+    else {
+        t.a[r] = x;
+    }
+}
+
+void duyet_truoc(Cay& t, int i) {
+    if (t.a[i] != -1 && i < 100) {
+        std::cout << t.a[i] << " ";
+        duyet_truoc(t, i * 2 + 1);
+        duyet_truoc(t, i * 2 + 2);
+    }
+}
+
+void duyet_giua(Cay& t, int i) {
+    if (t.a[i] != -1 && i < 100) {
+        duyet_giua(t, i * 2 + 1);
+        std::cout << t.a[i] << " ";
+        duyet_giua(t, i * 2 + 2);
+    }
+}
+
+void duyet_sau(Cay& t, int i) {
+    if (t.a[i] != -1 && i < 100) {
+        duyet_sau(t, i * 2 + 1);
+        duyet_sau(t, i * 2 + 2);
+        std::cout << t.a[i] << " ";
+    }
+}
+int main() {
+    Cay t;
+    rong(t);
+    them_goc(t, 100);
+	them_trai(t, 0, 5);
+	them_phai(t, 0, 10);
+	them_trai(t, 1, 1024);
+	them_phai(t, 1, 101);
+	them_trai(t, 2, 50);
+    them_phai(t, 2, 50000);
+	ktra_rong(t) ? std::cout << "Cay rong\n" : std::cout << "Cay khong rong\n";
+	std::cout << "Duyet truoc: ";
+	duyet_truoc(t, 0);
+	std::cout << "\n";
+	std::cout << "Duyet giua: ";
+	duyet_giua(t, 0);
+	std::cout << "\n";
+	std::cout << "Duyet sau: ";
+	duyet_sau(t, 0);
+    return 0;
+}
