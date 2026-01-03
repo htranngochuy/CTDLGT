@@ -1,0 +1,30 @@
+
+#include <iostream>
+
+
+struct Node {
+    int data;  // chi so 
+    char a[100]; // ten muc
+    Node* left;
+    Node* right;
+};
+
+
+bool so_sanh_sach(Node* t, Node* h) {
+    if (t == NULL && h == NULL) {
+        return true;
+    }
+    return (t->data == h->data && so_sanh_cay(t->left, h->left) && so_sanh_cay(t->right, h->right));
+}
+int main()
+{
+    Node* p = new Node();
+    Node* l = new Node();
+    if (so_sanh_sach(p, l))
+        std::cout << "2 sach giong nhau\n";
+    else std::cout << "2 sach khac nhau\n";
+    
+	// Do phuc tap cua thuat toan: O(n)
+    return 0;
+
+}
