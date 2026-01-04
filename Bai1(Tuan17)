@@ -1,0 +1,107 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+struct Node {
+    string title;       // Tiêu đề mục
+    int pages;          // Số trang của mục đó (hoặc tổng số trang)
+    vector<Node*> children; // Danh sách các mục con
+
+    Node(string t, int p) : title(t), pages(p) {}
+};
+
+int dem_trang(Node* root) {
+    if (!root) return 0;
+    return root->children.size();
+}
+
+
+int tong_trang(Node* node) {
+    int total = node->pages;
+    for (Node* child : node->children) {
+        total += tong_trang(child);
+    }
+    return total;
+}
+
+
+Node* chuong_dai_nhat(Node* root) {
+    if (!root || root->children.empty()) return nullptr;
+
+    Node* longest = nullptr;
+    int maxPages = -1;
+
+    for (Node* chapter : root->children) {
+        int currentTotal = tong_trang(chapter);
+        if (currentTotal > maxPages) {
+            maxPages = currentTotal;
+            longest = chapter;
+        }
+    }
+    return longest;
+}
+
+
+bool xoa(Node* parent, string targetTitle) {
+    for (auto it = parent->children.begin(); it != parent->children.end(); ++it) {
+        if ((*it)->title == targetTitle) {
+            delete* it; 
+            parent->children.erase(it);
+            return true;
+        }
+        if (xoa(*it, targetTitle)) return true;
+    }
+    return false;
+}
+
+
+void tim_chuong(Node* root, string chapterTitle) {
+    for (Node* chapter : root->children) {
+        if (chapter->title == chapterTitle) {
+            cout << "Cac muc trong chuong '" << chapterTitle << "':" << endl;
+            if (chapter->children.empty()) {
+                cout << "- Khong co muc con." << endl;
+            }
+            else {
+                for (Node* section : chapter->children) {
+                    cout << "+ " << section->title << " (" << section->pages << " trang)" << endl;
+                }
+            }
+            return;
+        }
+    }
+    cout << "Khong tim thay chuong: " << chapterTitle << endl;
+}
+
+int main() {
+    Node* book = new Node("Giao trinh C++", 0);
+
+    Node* c1 = new Node("Chuong 1: Co ban", 10);
+    Node* c2 = new Node("Chuong 2: Cau truc du lieu", 15);
+    Node* c3 = new Node("Chuong 3: Thuat toan", 50);
+
+    book->children.push_back(c1);
+    book->children.push_back(c2);
+    book->children.push_back(c3);
+
+    c1->children.push_back(new Node("1.1 Bien va Kieu du lieu", 5));
+    c1->children.push_back(new Node("1.2 Vong lap", 8));
+
+    cout << "1. So chuong cua sach: " << dem_trang(book) << endl;
+
+    Node* longest = chuong_dai_nhat(book);
+    if (longest) cout << "2. Chuong dai nhat: " << longest->title << endl;
+
+    cout << "3. ";
+    tim_chuong(book, "Chuong 1: Co ban");
+
+    cout << "4. Dang xoa muc '1.1 Bien va Kieu du lieu'..." << endl;
+    xoa(book, "1.1 Bien va Kieu du lieu");
+
+    tim_chuong(book, "Chuong 1: Co ban");
+
+    return 0;
+}
